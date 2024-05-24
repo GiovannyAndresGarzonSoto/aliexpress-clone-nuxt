@@ -10,10 +10,10 @@
         "
     >
         <NuxtLink :to="`/item/${product.id}`">
-            <!-- <img 
+            <img 
                 class="rounded-t "
                 :src="product.url"
-            > -->
+            >
 
             <div id="ProductDetails">
             
