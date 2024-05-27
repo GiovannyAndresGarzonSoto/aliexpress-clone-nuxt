@@ -4,9 +4,9 @@
             <div class="md:flex gap-4 justify-between mx-auto w-full">
                 <div class="md:w-[40%]">
                     <img 
-                        
+                        v-if="currentImage"
                         class="rounded-lg object-fit"
-                        src="https://picsum.photos/id/77/700/800"
+                        :src="currentImage"
                     >
                     <div v-if="images[0] !== ''" class="flex items-center justify-center mt-2">
                         <div v-for="image in images">
@@ -22,9 +22,9 @@
                     </div>
                 </div>
                 <div class="md:w-[60%] bg-white p-3 rounded-lg">
-                    <div v-if="true">
-                        <p class="mb-2">{{ product }}</p>
-                        <p class="font-light text-[12px] mb-2"><!--{{ product.data.description }}--> Description Section</p>
+                    <div v-if="product && product.data">
+                        <p class="mb-2">{{ product.data.title }}</p>
+                        <p class="font-light text-[12px] mb-2">{{ product.data.description }}</p>
                     </div>
 
                     <div class="flex items-center pt-1.5">
@@ -94,16 +94,16 @@ const route = useRoute()
 let product = ref(null)
 let currentImage = ref(null)
 
+onBeforeMount(async () => {
+    product.value = await useFetch(`/api/prisma/get-product-by-id/${route.params.id}`)
+})
 
 watchEffect(() => {
-    onMounted(async () => {
-    //     product.value = images
-    // })
-    // if (product.value && product.value.data) {
-        currentImage.value = 'https://picsum.photos/id/77/700/800'
-        images.value[0] = 'https://picsum.photos/id/77/700/800'
-        // userStore.isLoading = false
-    })
+    if (product.value && product.value.data) {
+        currentImage.value = product.value.data.url
+        images.value[0] = product.value.data.url
+        userStore.isLoading = false
+    }
 })
 
 const isInCart = computed(() => {
@@ -117,22 +117,22 @@ const isInCart = computed(() => {
 })
 
 const priceComputed = computed(() => {
-    // if (product.value && product.value.data) {
-    //     return product.value.data.price / 100
-    // }
+    if (product.value && product.value.data) {
+        return product.value.data.price / 100
+    }
     return '0.00'
 })
 
-const images = [
+const images = ref([
+    '',
     'https://picsum.photos/id/212/800/800',
     'https://picsum.photos/id/233/800/800',
     'https://picsum.photos/id/165/800/800',
     'https://picsum.photos/id/99/800/800',
     'https://picsum.photos/id/144/800/800',
-]
+])
 
 const addToCart = () => {
-    // userStore.cart.push(product.value.data)
-    alert('added')
+    userStore.cart.push(product.value.data)
 }
 </script>
