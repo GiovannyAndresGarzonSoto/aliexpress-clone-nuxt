@@ -16,7 +16,7 @@
                             to="/auth"
                             class="
                                 bg-[#FD374F] 
-                                w-full 
+                                w-full bun r
                                 text-white 
                                 text-[21px] 
                                 font-semibold 
@@ -36,7 +36,8 @@
                     <div class="bg-white rounded-lg p-4">
 
                         <div class="text-2xl font-bold mb-2">
-                            Shopping Cart ({{ userStore.cart.length }})
+                            Shopping Cart <!--({{ userStore.cart.length }})-->
+                            (0)
                         </div>
 
                     </div>
@@ -46,7 +47,7 @@
                     </div>
 
                     <div id="Items" class="bg-white rounded-lg p-4 mt-4">
-                        <div v-for="product in userStore.cart">
+                        <div v-for="product in products">
                             <CartItem 
                                 :product="product" 
                                 :selectedArray="selectedArray"
@@ -113,9 +114,14 @@
 import MainLayout from '~/layouts/MainLayout.vue';
 import { useUserStore } from '~/stores/user';
 const userStore = useUserStore()
-const user = useSupabaseUser()
+// const user = useSupabaseUser()
 
 let selectedArray = ref([])
+
+let products = [
+    {id: 1, title: 'Title 1', description: 'This is a description', url: 'https://picsum.photos/id/7/800/800', price: 9999},
+    {id: 2, title: 'Title 2', description: 'This is a description', url: 'https://picsum.photos/id/71/800/800', price: 8888}
+]
 
 onMounted(() => {
     setTimeout(() => userStore.isLoading = false, 200)
@@ -137,7 +143,6 @@ const totalPriceComputed = computed(() => {
 })
 
 const selectedRadioFunc = (e) => {
-
     if (!selectedArray.value.length) {
         selectedArray.value.push(e)
         return
